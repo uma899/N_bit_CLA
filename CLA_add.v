@@ -41,13 +41,13 @@ module CLA_add #(parameter N = 4) (
     endgenerate
 
 
-    stage_register #(.N(N)) s1(
+    stage_register #(.N(N)) p_reg(
         .data_in(p),
         .clk(clk), .reset(reset),
         .data_out(p_wireOut[N-1:0])
     );
 
-    stage_register #(.N(N)) s2(
+    stage_register #(.N(N)) g_reg(
         .data_in(g),
         .clk(clk), .reset(reset),
         .data_out(g_wireOut)
@@ -67,9 +67,25 @@ module CLA_add #(parameter N = 4) (
         end
     endgenerate
 
+    wire [N:0] tempReg1_out, tempReg2_out;
+
+/* To balance lost clock cycles in partial generator */
+    stage_register #(.N(N+1)) tempReg1(
+        .data_in(p_wireOut),
+        .clk(clk), .reset(reset),
+        .data_out(tempReg1_out)
+    );
+
+    stage_register #(.N(N+1)) tempReg2(
+        .data_in(tempReg1_out),
+        .clk(clk), .reset(reset),
+        .data_out(tempReg2_out)
+    );
+/*  */
+
     generate
         for (i = 0; i < N + 1; i = i + 1) begin
-            assign sum_in[i] = p_wireOut[i] ^ c[i];
+            assign sum_in[i] = tempReg2_out[i] ^ c[i];
         end
     endgenerate
 

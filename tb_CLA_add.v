@@ -20,20 +20,24 @@ module tb_CLA_add;
         #15;
         reset = 0;
 
-        #40;
-        a = 7'b0110011; b = 7'b0011110;
+        #10;
+        a = 7'd25; b = 7'd35;
 
-        #40;
-        a = 7'b1010101; b = 7'b0110010;
+        #10;
+        a = 7'd43; b = 7'd52;
 
+        #10;
+        a = 7'd29; b = 7'd0;
+
+        #10;
+        a = 7'd78; b = 7'd90;        
 
     end
 
     always @(posedge clk) begin
-        if (!reset) begin
-            $display("Time: %0t, Input A: %b, Input B: %b, Output Product: %b", $time, a, b, out);
+        if (!reset) begin // Only display meaningful data when not in reset
+            $display("Time: %0t, Input A: %d, Input B: %d, Output Product: %d", $time, a, b, out);
         end
     end    
     
-
 endmodule
